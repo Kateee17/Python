@@ -2,9 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-
-driver = webdriver.Chrome()  # или другой драйвер
+from selenium.common.exceptions import TimeoutExceptiondriver = webdriver.Chrome()  # или другой драйвер
 driver.get("https://bonigarcia.dev/selenium-webdriver-java/slow-calculator.html")
 
 # Введите задержку
