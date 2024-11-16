@@ -1,44 +1,58 @@
-import requests
-import pytest
 
-BASE_URL = "https://ru.yougile.com/api-v2/projects"
-HEADERS = {"Authorization": "H6HngIA816fpIhY7tBvWx/it3YbVvEt/33Sk8afA39MCR9a", "Content-Type": "application/json"}
-#Позитивные тесты
-def test_create_project():
-data = {"name": "New Project",
-        "description": "Project created for testing"}
-response = requests.post(BASE_URL, headers=HEADERS, json=data)
-assert response.status_code == 201
-assert response.json()['name'] == data['name']
+
+    def create_project_without_title(self):
+        payload = {
+            "users": {
+                "4f976db9-a5b5-4949-b659-0254fdddba85": "worker"
+            }
+        }
+        response = requests.post(self.BASE_URL, json=payload, headers=self.HEADERS)
+        return response.status_code
+
+    def update_project_without_id(self):
+        update_url = f"{self.BASE_URL}/invalid_id"
+        payload = {
+            "deleted": True,
+            "title": "Тестовое питон измененное"
+        }
+        response = requests.put(update_url, json=payload, headers=self.HEADERS)
+        return response.status_code
+
+# Примеры использования
+
+
+project_page = ProjectPage()
+
 
 def test_get_projects():
-    response = requests.get(BASE_URL, headers=HEADERS)
-    assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    response = project_page.get_projects()
+    assert isinstance(response.get('content'), list)
+
+
+def test_create_project_increases_count():
+    initial_count = project_page.get_projects().get('paging', {}).get('count', 0)
+    project_page.create_project()
+    updated_count = project_page.get_projects().get('paging', {}).get('count', 0)
+    assert updated_count == initial_count + 1
+
 
 def test_update_project():
-#Предположим, что проект с id = 1 существует
-    project_id = 1
-    update_data = {"name": "Updated Project Name"}
-    response = requests.put(f"{BASE_URL}/{project_id}", headers=HEADERS, json=update_data)
-    assert response.status_code == 200
-    assert response.json()['name'] == update_data['name']
+    project_id = project_page.create_project()
+    response = project_page.update_project(project_id)
+    assert response['title'] == "Тестовое питон измененное"
 
-def test_get_project():
-    project_id = 1
-    response = requests.get(f"{BASE_URL}/{project_id}", headers=HEADERS)
-    assert response.status_code == 200
-    assert response.json()['id'] == project_id
 
-#Негативные тесты
-def test_create_project_without_name():
-    data = {"description": "This project has no name"}
-    response = requests.post(BASE_URL, headers=HEADERS, json=data)
-    assert response.status_code == 400  # Ожидаем ошибку
+def test_get_project_by_id():
+    project_id = project_page.create_project()
+    response = project_page.get_project_by_id(project_id)
+    assert response['id'] == project_id
 
-def test_create_project_without_description():
-    data = {"name": "Project With No Description"}
-    response = requests.post(BASE_URL, headers=HEADERS, json=data)
-    assert response.status_code == 400  # Ожидаем ошибку
-if __name__ == "__main__":
-    pytest.main()
+
+def test_create_project_without_title():
+    status_code = project_page.create_project_without_title()
+    assert status_code == 400
+
+
+def test_update_project_without_id():
+    status_code = project_page.update_project_without_id()
+    assert status_code == 404
