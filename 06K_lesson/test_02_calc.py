@@ -1,22 +1,52 @@
+import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutExceptiondr= webdriver.Chrome()
-#илидругойдрайвер
-driver.get("https://bonigarcia.dev/selenium-webdriver-java/slow-calculator.html")
-#Введитезадержку
-delay_field = (driver.find_element(By.ID, "delay"))
-delay_field.send_keys("45")
-#Нажмитекнопки
-driver.find_element(By.ID, "number7").click()
-driver.find_element(By.ID, "plus").click()
-driver.find_element(By.ID, "number8").click()
-driver.find_element(By.ID, "equal").click()
-try: #Ожиданиерезультатастаймаутом60секунд WebDriverWait(driver,60).until(EC.text_to_be_present_in_element((By.ID, "result"), "15"))
-result = (driver.find_element(By.ID, "result").text)
-assert result == "15", f"Ожидаемый результат 15,а получено":{result}"
-print("Тест пройден успешно!")
-exceptTimeoutException: print("Тест провален: Результат не появился в течение 60 секунд.")
-exceptExceptionase: print(f"Произошлаошибка:{e}")
-finally:driver.quit()
+
+
+@pytest.fixture
+def driver():
+    driver = webdriver.Chrome()
+    yield driverdriver
+    driver.quit()
+
+
+def test_slow_calculator(driver):
+    # Открыть страницу калькулятора
+    driver.get("https://bonigarcia.dev/selenium-webdriver-java/slow-calculator.html")
+    waiter = WebDriverWait(driver, 40)
+    # Ввести значение 45 в поле с локатором #delay
+    delay_field = waiter.until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "#delay"))
+    )
+    delay_field.clear()
+    delay_field.send_keys("45")
+
+    # Нажать на кнопки 7, +, 8, =
+    buttons = ['7', '+', '8', '=']
+    for button in buttons:
+        button_element = waiter.until(
+            EC.element_to_be_clickable((By.XPATH, f"//span[text()='{button}']")
+                                       )
+        )
+        button_element.click()
+
+    # Ожидать появления результата
+    result_locator = (By.CSS_SELECTOR, "#result")
+    try:
+        # Ожидать 45 секунд
+        WebDriverWait(driver, 45).until(
+            EC.text_to_be_present_in_element(result_locator, "15")
+        )
+
+        # Получаем текст результата
+        result_element = driver.find_element(*result_locator)
+        result_text = result_element.text
+        print(f"Текущий текст результата: {result_text}")
+
+        # Проверка, что результат действительно равен 15
+        assert result_text == "15", "Ожидался результат 15, "
+        "но получен: {result_text}"
+    except Exception as e:
+        print(f"Ошибка: {e}")
