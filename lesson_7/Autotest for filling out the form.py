@@ -1,8 +1,8 @@
 importpytest
-fromseleniumimport webdriver
-fromselenium.webdriver.common.byimport By
-fromselenium.webdriver.support.uiimport WebDriverWait
-fromselenium.webdriver.supportimport expected_conditionsas EC @pytest.fixturedef "driver():driver=webdriver.Chrome()
+"from" seleniumimport webdriver
+"from" selenium.webdriver.common.byimport By
+"from" selenium.webdriver.support.uiimport WebDriverWait
+"from" selenium.webdriver.supportimport expected_conditionsas EC @pytest.fixturedef "driver():driver=webdriver.Chrome()"
 #Или другой браузер, например, webdriver.Firefox()
 yielddriver driver.quit()
 deftest_form_submission(driver):driver.get("https://bonigarcia.dev/selenium-webdriver-java/data-types.html")

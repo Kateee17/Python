@@ -1,9 +1,9 @@
-"import pytest
-fromseleniumimport webdriver
-fromselenium.webdriver.common.byimport By
-fromselenium.webdriver.support.uiimport WebDriverWait
-fromselenium.webdriver.supportimport expected_conditionsas EC
-fromselenium.common.exceptionsimport TimeoutExceptiondef test_saucedemo_checkout():
+"import pytest"
+"from" seleniumimport webdriver
+"from" selenium.webdriver.common.byimport By
+"from" selenium.webdriver.support.uiimport WebDriverWait
+"from" selenium.webdriver.supportimport expected_conditionsas EC
+"from" selenium.common.exceptionsimport TimeoutExceptiondef test_saucedemo_checkout():
 # Инициализация драйвера (замените на Ваш путь к драйверу)
 "driver = webdriver.Chrome()"
 # или webdriver.Firefox(), etc. try:
