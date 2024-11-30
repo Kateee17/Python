@@ -1,36 +1,32 @@
 import allure
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.ie.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
 class CalcPage:
-
-    @allure.step("CalcPage.init(). РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЃС‚СЂР°РЅРёС†С‹ ")
+    @allure.step("CalcPage.init(). Инициализация страницы ")
     def __init__(self, driver: WebDriver, URL: str) -> None:
         self._driver = driver
         self._driver.get(URL)
         self._driver.implicitly_wait(4)
         self._driver.maximize_window()
-
     @allure.step("CalcPage.input_field(). "
-                 "Р¤РёРєСЃР°С†РёСЏ РІСЂРµРјРµРЅРё РѕР¶РёРґР°РЅРёСЏ РІ СЃРµРєСѓРЅРґР°С… : {time_delay}")
+                 "Фиксация времени ожидания в секундах : {time_delay}")
     def input_field(self, selector: str, time_delay: int) -> None:
         self._driver.find_element(By.CSS_SELECTOR, selector).clear()
         (self._driver.find_element(By.CSS_SELECTOR, selector).
          send_keys(f'{time_delay}'))
-
     @allure.step("CalcPage.click_button(). "
-                 "РќР°Р¶Р°С‚РёРµ РєРЅРѕРїРѕРє РєР°Р»СЊРєСѓР»СЏС‚РѕСЂР°. "
-                 "РљРЅРѕРїРєРё РѕРїСЂРµРґРµР»РµРЅС‹ РІ РїР°СЂР°РјРµС‚СЂРµ collection")
+                 "Нажатие кнопок калькулятора. "
+                 "Кнопки определены в параметре collection")
     def click_button(self, collection: list[str]) -> None:
         for symbol in collection:
             (self._driver.find_element(By.XPATH, f"//span[text()='{symbol}']").
              click())
-
     @allure.step("CalcPage.waiting_result(). "
-                 "РћР¶РёРґР°РЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РІС‹С‡РёСЃР»РµРЅРёР№")
+                 "Ожидание результатов вычислений")
     def waiting_result(self, selector_delay: str,
                        result: str,
                        selector: str) -> str:
