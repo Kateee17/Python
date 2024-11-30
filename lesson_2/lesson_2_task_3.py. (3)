@@ -1,0 +1,7 @@
+def square(side):
+  Вычисляет площадь квадрата.
+  Args:
+      side: Длина стороны квадрата.
+  Returns:
+      Площадь квадрата.
+  return side * side

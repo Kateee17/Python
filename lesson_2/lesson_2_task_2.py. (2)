@@ -1,0 +1,8 @@
+def is_year_leap(year):
+    if year % 4 == 0:
+        return True
+    else:
+        return False
+year_1 = 2020
+leap_year = is_year_leap(year_1)
+print(f"год {year_1}: {leap_year}")
